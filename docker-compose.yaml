@@ -27,6 +27,8 @@ services:
   nginx:
     image: nginx
     restart: always
+    volumes:
+      - ./content:/usr/share/nginx/html
     labels:
       - traefik.enable=true
       - traefik.port=80
