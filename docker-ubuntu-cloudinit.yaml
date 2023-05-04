@@ -1,0 +1,40 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+users:
+  - name: ubuntu
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDHEv7sme5M4/VZzXVbylxecCqQyiPdNM9KrPSNeayMbYlnA1rU6eP5gUncIvIQ95YQ2w9bu0J/BPItXeW6hj3FSZ1i55RqRk+jFKiYgeegKtgqLOSugdqJ3Mv5YKoTCueFKibPbmlPE8lVmsL7j5F/tEd86zTXWtL65dojUCPQxgKBH2L5EGiGGNAum4alh/h4z2chaoP28AHte8JzogrMKcfW+lCrc5koRUxpzJ7fO/oZyLlnFUDc4xTZVBs5GgP/jri4IdkFm/iJDLvhRU/k3NcDURcOSL0gvqET86qRGEPFQ/hXggTpQwcIiFKLDjNB8gxCCf0wsXPKgLp6DYJh jacqui_p@pc-jacqui_p
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: sudo
+    shell: /bin/bash
+
+groups:
+  - docker
+
+system_info:
+  default_user:
+    groups: [ docker ]
+
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+  - unattended-upgrades
+
+runcmd:
+  - mkdir -p /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  - systemctl enable docker
+  - systemctl start docker
+  - usermod -aG docker ubuntu
+  - echo "AllowUsers ubuntu" >> /etc/ssh/sshd_config
+  - restart ssh
+
+final_message: "The system is finally up, after $UPTIME seconds"
