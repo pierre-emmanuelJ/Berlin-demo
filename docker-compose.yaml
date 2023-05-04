@@ -15,7 +15,7 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.myresolver.acme.email=berlin-test@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.email=berlin@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - 80:80
@@ -32,7 +32,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.port=80
-      - traefik.http.routers.nginx.rule=Host(`berlin-test.pej.ovh`)
+      - traefik.http.routers.nginx.rule=Host(`berlin.pej.ovh`)
       - traefik.http.routers.nginx.entrypoints=websecure
       - traefik.http.routers.nginx.tls=true
       - traefik.http.routers.nginx.tls.certresolver=myresolver
